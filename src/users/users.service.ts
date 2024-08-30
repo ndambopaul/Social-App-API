@@ -37,19 +37,13 @@ export class UsersService {
         }   
     }
 
-    async findOneUser(email: string): Promise<UserData> {
+    async findOneUser(email: string): Promise<User> {
         const foundUser = await this.userModel.findOne({ email }).exec()
-        const userId = foundUser._id
-        const newUser = { 
-            userId: userId.toString(),
-            email: foundUser.email,
-            username: foundUser.username,
-            gender: foundUser.gender,
-            name: foundUser.name,
-            role: foundUser.role,
-            password: foundUser.password
-         }
-        return newUser
+        return foundUser
+    }
+
+    async findOne(email: string): Promise<User> {
+        return this.userModel.findOne({ email }).exec()
     }
 
 }

@@ -12,16 +12,15 @@ export class AuthService {
     ) {}
 
     async loginUser(loginDto: LoginDto): Promise<{access_token: string}> {
-        const user = await this.userService.findOneUser(loginDto.email)
+        const user = await this.userService.findOne(loginDto.email)
 
         if(!user) throw new NotFoundException(`User with email: ${loginDto.email} not found!`)
         
         const passwordMatches = await bcrypt.compare(loginDto.password, user?.password)
         if(!passwordMatches) throw new UnauthorizedException("Incorrect password")
 
-        const payload = { sub: user.userId, username: user.username, role: user.role, name: user.name, email: user.email, gender: user.gender };
+        const payload = { userId: user._id, username: user.username, role: user.role, name: user.name, email: user.email, gender: user.gender };
         
-
         return {
             access_token: await this.jwtService.signAsync(payload),
           };
